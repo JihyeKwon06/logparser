@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.logparser.LogParserHandler;
+import com.github.handler.LogParserHandler;
 
 public class LogParserHandlerTest {
 	

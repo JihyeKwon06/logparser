@@ -1,4 +1,4 @@
-package com.github.logparser;
+package com.github.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+
+import com.github.logparser.LogParser;
+import com.github.logparser.Search;
 
 public class LogParserHandler {
 	public static void main(String[] args) throws Exception {
