@@ -69,7 +69,7 @@ public class LogParser {
 		
 		ArrayList<Object> playerInfo = null;			// ArrayList<0: id_player, 1: player_kills>
 		HashMap<String, ArrayList<Object>> playerInfos = null;	// Map<no_player, ArrayList<0: id_player, 1: player_kills>>
-		HashMap<String, Integer> killsByMeans = null;	// Map<no_meansOfDeath, count>
+		HashMap<String, Integer> kills_by_means = null;	// Map<no_meansOfDeath, count>
 		
 		while ((line = reader.readLine()) != null) {
 			
@@ -97,7 +97,7 @@ public class LogParser {
 						gameInfo.put("total_kills", total_kills);
 						gameInfo.put("players", players);
 						gameInfo.put("players_kills", players_kills);
-						gameInfo.put("kills_by_means", killsByMeans);
+						gameInfo.put("kills_by_means", kills_by_means);
 						
 						resultMap.put(noGame, gameInfo);
 					}
@@ -107,7 +107,7 @@ public class LogParser {
 					noGame++;
 					total_kills = 0;
 					playerInfos = new HashMap<String, ArrayList<Object>>();
-					killsByMeans = new HashMap<String, Integer>();
+					kills_by_means = new HashMap<String, Integer>();
 					break;
 				case "ClientConnect" :
 					no_player = tokens.nextToken();
@@ -148,10 +148,10 @@ public class LogParser {
 					
 					String meansOfDeath = getMeansOfDeathValue(no_meansOfDeath);
 					
-					if (killsByMeans.containsKey(meansOfDeath)) {
-						killsByMeans.put(meansOfDeath, killsByMeans.get(meansOfDeath)+1);
+					if (kills_by_means.containsKey(meansOfDeath)) {
+						kills_by_means.put(meansOfDeath, kills_by_means.get(meansOfDeath)+1);
 					} else {
-						killsByMeans.put(meansOfDeath, 1);
+						kills_by_means.put(meansOfDeath, 1);
 					}
 					total_kills++;
 					break;
