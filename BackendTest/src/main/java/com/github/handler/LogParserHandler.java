@@ -18,6 +18,7 @@ public class LogParserHandler {
 		
 		LogParser parser = new LogParser();
 		Map<Integer, HashMap<String, Object>> resultMap;
+		HashMap<String, Integer> players_kills_total = new HashMap<String, Integer>();
 		
 		if (args.length>0) {
 			resultMap = parser.getResultMap(args[0]);
@@ -25,9 +26,8 @@ public class LogParserHandler {
 			resultMap = parser.getResultMap();
 		}
 		
-		resultMap = parser.getResultMap("unitTest.log");
-		
 		Scanner scanner = new Scanner(System.in);
+		System.out.println("[ Just enter to see information of all the game or write 'search ID' for search ]");
 		System.out.print("Enter the order : ");
 		String input = scanner.nextLine();
 		String inputUpperCase = input.toUpperCase();
@@ -39,15 +39,19 @@ public class LogParserHandler {
 		
 		Set<Integer> args1 = resultMap.keySet();
 		for (int i : args1) {
-			System.out.println("game_"+ i +":");
-
+			System.out.print("game_"+ i +":");
+			
 			// Result
 			HashMap<String, Object> result = resultMap.get(i);
-			System.out.println(result);
 			
-			// Ranking
-			HashMap<String, Integer> players_kills = (HashMap<String, Integer>) result.get("players_kills");
-			System.out.println("[ Ranking ]	");
+			// GameResult
+			//System.out.println(result);
+			printMap(result);
+			
+			HashMap<String, Integer> players_kills = (HashMap<String, Integer>)result.get("players_kills");
+			
+			// Ranking of the game
+			/*System.out.println("[ Ranking ]	");
 			
 			Iterator it = sortByValue(players_kills, "DESC").iterator();
 			int ranking = 1;
@@ -57,8 +61,28 @@ public class LogParserHandler {
 				System.out.println(ranking +" : " + key + "("+players_kills.get(key)+")");
 				ranking++;
 			}
-			System.out.println();
+			System.out.println();*/
+
+			// Set Ranking of all the games
+			Set<String> enums = players_kills.keySet();
+			for (String key : enums) {
+				players_kills_total.put(key, (players_kills_total.containsKey(key) ? players_kills_total.get(key) : 0) +players_kills.get(key));
+			}
+			
 		}
+		
+		// Print Ranking of all the games
+		System.out.println(System.lineSeparator() + "[ Ranking of all the games]");
+		
+		Iterator it = sortByValue(players_kills_total, "DESC").iterator();
+		int ranking = 1;
+		
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			System.out.println(ranking +" : " + key + "("+players_kills_total.get(key)+")");
+			ranking++;
+		}
+		
 	}
 	
 	public static List sortByValue(final HashMap hashMap, final String order) {
@@ -81,5 +105,29 @@ public class LogParserHandler {
 			}
 		});
 		return list;
+	}
+	
+	public static void printMapTap(Map map, int tapCnt) {
+		System.out.println(" {");
+		Set<Object> enums = map.keySet();
+		String keyMsg = "";
+		for (int tap = 0; tap <= tapCnt; tap++) {
+			keyMsg = keyMsg + "	 ";
+		}
+
+		for (Object key : enums) {
+			System.out.print(keyMsg+ key + ": ");
+			Object value = map.get(key);
+			if (value instanceof  Map) {
+				printMapTap((Map)value, tapCnt+1);
+			} else {
+				System.out.println(value);
+			}
+		}
+		System.out.println(keyMsg.substring(1)+"}");
+	}
+	
+	public static void printMap(Map map) {
+		printMapTap(map, 0);
 	}
 }
