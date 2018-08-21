@@ -11,6 +11,38 @@ import java.util.StringTokenizer;
 
 public class LogParser {
 	
+	public enum meansOfDeath {
+		MOD_UNKNOWN,
+		MOD_SHOTGUN,
+		MOD_GAUNTLET,
+		MOD_MACHINEGUN,
+		MOD_GRENADE,
+		MOD_GRENADE_SPLASH,
+		MOD_ROCKET,
+		MOD_ROCKET_SPLASH,
+		MOD_PLASMA,
+		MOD_PLASMA_SPLASH,
+		MOD_RAILGUN,
+		MOD_LIGHTNING,
+		MOD_BFG,
+		MOD_BFG_SPLASH,
+		MOD_WATER,
+		MOD_SLIME,
+		MOD_LAVA,
+		MOD_CRUSH,
+		MOD_TELEFRAG,
+		MOD_FALLING,
+		MOD_SUICIDE,
+		MOD_TARGET_LASER,
+		MOD_TRIGGER_HURT,
+		MOD_NAIL,
+		MOD_CHAINGUN,
+		MOD_PROXIMITY_MINE,
+		MOD_KAMIKAZE,
+		MOD_JUICED,
+		MOD_GRAPPLE;
+	}
+	
 	private String filePath = "games.log";
 
 	public Map<Integer, HashMap<String, Object>> getResultMap(String filePath) throws Exception {
@@ -37,12 +69,12 @@ public class LogParser {
 		
 		ArrayList<Object> playerInfo = null;			// ArrayList<0: id_player, 1: player_kills>
 		HashMap<String, ArrayList<Object>> playerInfos = null;	// Map<no_player, ArrayList<0: id_player, 1: player_kills>>
-		
+		HashMap<String, Integer> killsByMeans = null;	// Map<no_meansOfDeath, count>
 		
 		while ((line = reader.readLine()) != null) {
 			
 			tokens = new StringTokenizer(line);
-			String playTime = tokens.nextToken();
+			tokens.nextToken();	// play time
 			String event = tokens.nextToken(": ");
 			String no_player;
 			
@@ -65,6 +97,7 @@ public class LogParser {
 						gameInfo.put("total_kills", total_kills);
 						gameInfo.put("players", players);
 						gameInfo.put("players_kills", players_kills);
+						gameInfo.put("kills_by_means", killsByMeans);
 						
 						resultMap.put(noGame, gameInfo);
 					}
@@ -74,6 +107,7 @@ public class LogParser {
 					noGame++;
 					total_kills = 0;
 					playerInfos = new HashMap<String, ArrayList<Object>>();
+					killsByMeans = new HashMap<String, Integer>();
 					break;
 				case "ClientConnect" :
 					no_player = tokens.nextToken();
@@ -98,6 +132,7 @@ public class LogParser {
 				case "Kill" :
 					no_player = tokens.nextToken();
 					String deceased = tokens.nextToken();
+					int no_meansOfDeath = Integer.parseInt(tokens.nextToken());
 					
 					if (no_player.equals(deceased)) {
 						break;
@@ -111,6 +146,13 @@ public class LogParser {
 						playerInfos.put(no_player, playerInfo);
 					}
 					
+					String meansOfDeath = getMeansOfDeathValue(no_meansOfDeath);
+					
+					if (killsByMeans.containsKey(meansOfDeath)) {
+						killsByMeans.put(meansOfDeath, killsByMeans.get(meansOfDeath)+1);
+					} else {
+						killsByMeans.put(meansOfDeath, 1);
+					}
 					total_kills++;
 					break;
 				default :
@@ -120,4 +162,10 @@ public class LogParser {
 		}
 		return resultMap;
 	}
+	
+	public static String getMeansOfDeathValue(int idx) {
+		meansOfDeath[] arr = meansOfDeath.values();
+		return arr[idx].toString(); 
+	}
+
 }
