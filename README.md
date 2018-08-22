@@ -61,10 +61,14 @@ A final ranking of all games is calculated by the sum of each game.
 ## Instructions
 1. ```git clone https://github.com/JihyeKwon06/logparser.git```
 2. ```cd git/logparser/BackendTest/target/classes/```
-3. ```java com.github.handler.LogParserHandler```  
+3. ```java com.github.handler.LogParserHandler```    
  if you want to change the path of the log file, write the new path after the class name LogParserHandler, like this:
  ```java com.github.handler.LogParserHandler [new path]```
 4. Enter the order.
     - Press enter to see the information of all games.  
-    - Write 'search [ID]' to search for a specific ID.
+    - Write 'search [ID]' to search for a specific ID.  
+
+  
+    
+** You can find the default log here: [default log](https://github.com/JihyeKwon06/logparser/blob/master/BackendTest/target/classes/games.log)  
 
